@@ -4,10 +4,7 @@ digraph CallGraph {
 "stack_clear" -> "stack_is_empty";
 "thread_func" -> "stack_push";
 "thread_func" -> "stack_pop";
-"thread_func" -> "stack_pop";
-"thread_func" -> "stack_push";
 "main" -> "stack_init";
-"main" -> "stack_push";
 "main" -> "stack_push";
 "main" -> "stack_size";
 "main" -> "stack_is_empty";

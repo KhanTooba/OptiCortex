@@ -4,6 +4,7 @@
 #include "llvm/Analysis/CallGraph.h"
 #include "llvm/Support/raw_ostream.h"
 #include <fstream>
+#include <set>  // Include the set header for storing edges
 
 using namespace llvm;
 
@@ -20,6 +21,7 @@ namespace {
 
             // Build the call graph for the module
             CallGraph CG(M);
+            std::set<std::pair<std::string, std::string>> edges; // Set to track unique edges
 
             // Iterate over all the functions in the call graph
             for (auto &Node : CG) {
@@ -35,8 +37,15 @@ namespace {
                             if (Function *Callee = CalleeNode->getFunction()) {
                                 if (!Callee->isDeclaration()) {
                                     std::string CalleeName = Callee->getName().str();
-                                    // Write the caller-callee relationship to the DOT file
-                                    dotFile << "\"" << CallerName << "\" -> \"" << CalleeName << "\";\n";
+                                    
+                                    // Create a pair to represent the edge
+                                    auto edge = std::make_pair(CallerName, CalleeName);
+                                    
+                                    // Check if the edge already exists
+                                    if (edges.insert(edge).second) {
+                                        // Write the caller-callee relationship to the DOT file if it's a new edge
+                                        dotFile << "\"" << CallerName << "\" -> \"" << CalleeName << "\";\n";
+                                    }
                                 }
                             }
                         }
